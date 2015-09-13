@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity
         String originalString=scannedText.getText().toString();
         PreProcess preProcess=new PreProcess(originalString);
         originalString=preProcess.removeUnnecesarySymbols();
-        scannedText.setText(originalString);preProcess.splitAndCheck(originalString);
-
+        scannedText.setText(originalString);
+        preProcess.splitAndCheck(originalString);
         ///THIS IF CONDITION IS FOR BRACKETS VALIDATIONS
         if(preProcess.bracketValidation())
         {
@@ -118,17 +118,32 @@ public class MainActivity extends AppCompatActivity
             {
                 if(preProcess.checkBracketsAndOperators(originalString))
                 {
-                    preProcess.splitAndCheck(originalString);
-                    String generalEQ=preProcess.generalizeEquation();
-                    Log.i("FILTERD String", generalEQ);
-                    String finalResult= Translate.sort(generalEQ);
-                    results.setText(finalResult);
+                    if(preProcess.checkVariableNames(originalString))
+                    {
+                        if(preProcess.decideTypeNSplitCheck(originalString))
+                        {
+                            String generalEQ=preProcess.generalizeEquation();
+                            Log.i("FILTERD String", generalEQ);
+                            String finalResult= Translate.sort(generalEQ);
+                            results.setText(finalResult);
+                        }
+                        else
+                        {
+                            Toast.makeText(this, "INAVLID EXPRESSION", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "INVALID VARIABLE NAMES", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
                 else
                 {
-                    Toast.makeText(this, "OPERATORS AND BRACKETS CONFLICT", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "BRACKETS AND OPERATORS ON CONFLICT", Toast.LENGTH_SHORT).show();
                 }
-
 
             }
             else

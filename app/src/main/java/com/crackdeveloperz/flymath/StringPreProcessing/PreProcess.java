@@ -7,6 +7,11 @@ package com.crackdeveloperz.flymath.StringPreProcessing;
 
 import android.util.Log;
 
+import com.crackdeveloperz.flymath.Translator.Translate;
+
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  *
  * @author trees
@@ -21,7 +26,8 @@ public class PreProcess
         this.rawString=new StringBuilder(rawEquation);
         
     }
-    
+
+    //THIS REMOVES ALL THE UNNECESSARY SYMBOLS AND REPLACES NEEDY SYMBOLS
     public String removeUnnecesarySymbols()
     {
         StringBuilder temp=new StringBuilder();
@@ -37,15 +43,19 @@ public class PreProcess
         }
 
         String processed=temp.toString().replaceAll("\\s+", "");
-        processed=processed.replace("[", "(").replace("]",")").replace("{","(").replace("}",")");
-        processed=processed.replace("()","");
-        processed=processed.replaceAll("A", "^");
-        processed=processed.replace("(-)","(-1)").replace("(+)","(1)");
+        processed=processed.replace("[", "(").replace("]",")").replace("{","(").replace("}", ")");
+        processed=processed.replace("()", "");
+        processed=processed.replace("A", "^");
+        processed=processed.replace("(-)","(-1)").replace("(+)","(1)").replace("(+","(");
+
+        if(processed.charAt(0)=='+') processed=processed.substring(1,processed.length());
         rawString=new StringBuilder(processed);
         Log.i("UNNECESSARY SYMBOLS", processed);
         return processed;
     }
-    
+
+
+    //THIS VLIDATES THE BRACKETS CLOSING AND OPENING USING STACK
     public boolean bracketValidation()
     {
        removeUnnecesarySymbols();
@@ -53,7 +63,8 @@ public class PreProcess
        Stack stack=new Stack();
        return stack.startStack(rawData);
     }
-    
+
+    ///this method genralizes the equation to make equation more solvable
     public String generalizeEquation()
     {
         
@@ -145,6 +156,7 @@ public class PreProcess
         }
     }
 
+    //THIS CHECKS THE OPERATORS AND BRACKETS POSITIONS AND VLIDATE
 
     public boolean checkBracketsAndOperators(String expression)
     {
@@ -158,6 +170,10 @@ public class PreProcess
             if(i!=expression.length()-1)
             {
                 aheadChar=expression.charAt(i+1);
+
+            }
+            if(i!=0)
+            {
                 backChar=expression.charAt(i-1);
             }
 
@@ -167,16 +183,18 @@ public class PreProcess
                 {
                     return false;
                 }
+
             }
             if(nowChar==')')
             {
-                if(isOperator(backChar)) return false;
+                return !isOperator(backChar);
             }
         }
 
         return true;
     }
 
+    //THIS CHECKS IF THE USE OF OPERATORS ARE RANDOOMS
     public boolean checkOperators(String expression)
     {
         char nowChar,aheadChar;
@@ -197,14 +215,110 @@ public class PreProcess
              }
          }
 
-        return true;
+        nowChar=expression.charAt(0);
+        return !(nowChar=='*' || nowChar=='/' || nowChar=='^' || nowChar=='=');
+
     }
 
 
     private boolean isOperator(char c)
     {
-        if(c=='^' || c=='*'||c=='+' || c=='-'||c=='=' || c=='/') { return true;}
-        else  {return false;}
+        return c == '^' || c == '*' || c == '+' || c == '-' || c == '=' || c == '/';
+    }
+
+
+    //TO CHECK IF THE VARIABLE NAMES ARE VALID OR NOT
+    public boolean checkVariableNames(String experssion)
+    {
+        char nowChar,aheadChar;
+        for(int i=0;i<experssion.length();i++)
+        {
+            aheadChar=';';
+            nowChar=experssion.charAt(i);
+            if(i!=experssion.length()-1) { aheadChar=experssion.charAt(i+1);}
+
+            if(isAlphabet(nowChar) && isAlphabet(aheadChar))
+            {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    private boolean isAlphabet(char c)
+    {
+        return (c>='a' && c<='z' || c>='A' && c<='Z');
+    }
+
+    private int getCharCount(String expession, char c)
+    {
+        int count=0;
+        for(char ch:expession.toCharArray())
+        {
+            if(ch==c) count++;
+        }
+        return count;
+    }
+
+    ///DECIDE TYPE OF EXPRESSION
+    public boolean decideTypeNSplitCheck(String expression)
+    {
+        if(Translate.containsVariable(expression)&& expression.contains("="))
+        {
+            Log.e("Expression gh","IT IS EQUATION");
+            return splitAndCheckEQ(expression);
+        }
+
+        else if(!Translate.containsVariable(expression) && !expression.contains("="))
+        {
+            Log.e("Expression gh","expression normal arithmatic");
+        }
+
+        else
+        {
+            Log.i("Expression", "expression ERROR:Not valide mathematical expression!");
+        }
+            return false;
+    }
+
+
+    ///SPLITS AND CHECK THE EQUATION
+    private boolean splitAndCheckEQ(String expression)
+    {
+        String equations[]=expression.split(Translate.EQ_DELEMINATOR);
+        int noOfEQs=equations.length;
+        int noOfUniqueVariables=getUniqVarbleCount(expression);
+        if(noOfUniqueVariables!=noOfEQs || (noOfEQs!=getCharCount(expression, ':')+1))
+        {
+            Log.i("EQUATION","EQUATION SET INVALID");
+            return false;
+        }
+
+        for (String equation : equations)
+        {
+            Log.i("EQUATION", "EQUATION=" + equation);
+            if(!(getUniqVarbleCount(equation)<=noOfUniqueVariables) ||  getCharCount(equation,'=')!=1 || equation.split("=").length!=2)
+            {
+                Log.i("EQUATION"," EQUATION INVALID");
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    ////CHECK THE DIFFERENT VARIABLES COUNT IN THE EUQATION
+    private int getUniqVarbleCount(String expression)
+    {
+        Set<Character> variables=new TreeSet<>();
+        for(char c:expression.toCharArray())
+        {
+            if(isAlphabet(c)) variables.add(c);
+        }
+        return variables.size();
     }
     
 }
