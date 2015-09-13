@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- RED MATERIAL PALLET PAIR-->
+    <color name="redPrimary">#f44336</color>
+    <color name="redDark">#d32f2f</color>
+
+    <!-- BLUE MATERIAL PALLET PAIR -->
+    <color name="bluePrimary">#2196F3</color>
+    <color name="blueDark">#1976D2</color>
+
+    <!--TEAL MATERIAL PALLLET PAIR -->
+    <color name="tealPrimary">#009688</color>
+    <color name="tealDark">#00796B</color>
+
+    <!-- GREEN MATERIAL PALLET PARI -->
+    <color name="greenPrimary">#388E3C</color>
+    <color name="greenDark">#1B5E20</color>
+
+    <!-- GREY MATERIAL COLOR PAIR -->
+    <color name="greyPrimary">#795548</color>
+    <color name="greyDark">#5D4037</color>
+
+    <color name="circle">#009688</color>
+
+</resources>

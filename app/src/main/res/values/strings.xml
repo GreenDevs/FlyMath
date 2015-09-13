@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FlyMath</string>
+    <string name="app_name">Photo Maths</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -8,4 +8,10 @@
     <string name="math_title"></string>
     <string name="math_msg"></string>
     <string name="scan">SCAN</string>
+
+    <string name="scan1">&#xe600;</string>
+    <string name="scan2">&#xe603;</string>
+    <string name="calculate1">&#xe601;</string>
+    <string name="calculate2">&#xe602;</string>
+
 </resources>
