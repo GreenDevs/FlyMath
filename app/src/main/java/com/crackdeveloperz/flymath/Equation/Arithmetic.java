@@ -41,7 +41,6 @@ public class Arithmetic
             int endIndex = cacheInput.indexOf(")");
             String str = cacheInput.substring(0, endIndex);
             int startIndex = str.lastIndexOf("(");
-            boolean symbolSwitch=false;
             String returnedAnswer =  resolve(cacheInput.substring(startIndex + 1, endIndex));
 
             StringBuffer buffer = new StringBuffer(cacheInput);

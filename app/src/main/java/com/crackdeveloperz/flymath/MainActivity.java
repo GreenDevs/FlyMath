@@ -1,10 +1,12 @@
 package com.crackdeveloperz.flymath;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crackdeveloperz.flymath.Translator.Translate;
@@ -18,7 +20,8 @@ public class MainActivity extends AppCompatActivity
     private static final String LICENSE_KEY="QEAZF5XF-6M6OTULX-F4OBUP5Q-ZFJOILKJ-3HOOVHGW-WDEVFZBN-JHM5Z2U4-FDIW5EYJ";
     private static final String MATCH_TAG="Match";
     private static final int MY_REQUEST_CODE=1;
-
+    private EditText scannedText;
+    private TextView result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,6 +29,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        result=(TextView)findViewById(R.id.calculated_result);
+        scannedText=(EditText)findViewById(R.id.scanned_text);
     }
 
 
@@ -46,13 +51,18 @@ public class MainActivity extends AppCompatActivity
                 // results bundle contains result strings in keys defined
                 // by scan configuration name
                 // for example, if set up as in step 1, then you can obtain
-                // e-mail address with following line                               2x=4
-                String raw = results.getString(MATCH_TAG, "");
-                raw.replaceAll("\\s+","");
-                Log.i("MASU MA GHAS", "LENGTH_OF_EQUATION"+"#"+raw+"#");
+                // e-mail address with following line
+                //                             2x=4
+                String raw="";
+                if(results!=null)
+                {
+                    raw = results.getString(MATCH_TAG, "");
+                }
 
-               String finalResult= Translate.sort(raw);
-                ((TextView)findViewById(R.id.scanned_text)).setText(finalResult);
+                raw=raw.replaceAll("\\s+", "");
+                raw=raw.replaceAll("A", "^");
+                scannedText.setText(raw);
+
             }
         }
     }
@@ -80,5 +90,17 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(BlinkOCRActivity.EXTRAS_SCAN_CONFIGURATION, confArray);
 
         startActivityForResult(intent, MY_REQUEST_CODE);
+    }
+
+    public void calculate(View v)
+    {
+        String finalResult= Translate.sort(scannedText.getText().toString());
+        result.setText(finalResult);
+
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
