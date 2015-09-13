@@ -1,86 +1,195 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
-    android:orientation="vertical"
-    >
-
-    <include
-        layout="@layout/toolbar"
-        android:id="@+id/app_bar"
-        />
-
+     >
     <LinearLayout
-        android:orientation="vertical"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
-        >
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-            <TextView
-                android:text="SCANNED TEXT:"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+        <include
+            layout="@layout/toolbar"
+            android:id="@+id/app_bar"
+            />
 
-            <EditText
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+
+
+
+
+
+
+            <RelativeLayout
+                android:layout_marginTop="120dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/scanned_text" />
+                android:padding="22dp"
+                android:gravity="center"
+                android:layout_marginBottom="135dp"
 
-            <Button
-                android:padding="10dp"
-                android:onClick="calculate"
-                android:text="CALCULATE"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
-                />
+                >
 
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_centerInParent="true"
+                    app:mrl_rippleFadeDuration="55"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleHover="true"
+                    app:mrl_rippleRoundedCorners="87dp"
+                    app:mrl_rippleDuration="300"
+
+                    >
+                <View
+
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:onClick="onClick"
+                    android:background="@drawable/circle_shape"/>
+                </com.balysv.materialripple.MaterialRippleLayout>
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/scan_text"
+                    android:layout_gravity="center"
+                    android:textSize="80sp"
+                    android:textColor="#fff"
+                    android:text="SCAN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+            </RelativeLayout>
 
 
             <TextView
-                android:text="RESULT:"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-
-            <TextView
-                android:textSize="20sp"
-                android:id="@+id/calculated_result"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                />
-
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            >
-            <View
-                android:elevation="8dp"
-                android:layout_gravity="center"
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:onClick="onClick"
-                android:background="@drawable/circle_shape"
-                />
-
-            <TextView
+                android:gravity="center_vertical"
+                android:paddingLeft="15dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Maths"
                 android:elevation="10dp"
-                android:id="@+id/scan_text"
-                android:layout_gravity="center"
-                android:textSize="80sp"
                 android:textColor="#fff"
-                android:text="SCAN"
+                android:background="@color/bluePrimary"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"/>
+                <LinearLayout
+
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    >
+                    <TextView
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        android:text="SCANNED TEXT:"
+                        android:textSize="18sp"
+                        android:clickable="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/scanned_text" />
+
+                    <TextView
+                        android:background="@drawable/circle_shape"
+                        android:elevation="6dp"
+                        android:textColor="#fff"
+                        android:gravity="center"
+                        android:textSize="30sp"
+                        android:id="@+id/calculate_button"
+                        android:onClick="calculate"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginBottom="10dp"
+                        />
+
+
+                </LinearLayout>
+
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="RESULTS:"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
-        </FrameLayout>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                >
+
+                <TextView
+                    android:id="@+id/id_of_result"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:textSize="20sp"
+                    android:text="2x+4=0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                >
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:textSize="20sp"
+                    android:text="2x=-4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                >
+
+                <TextView
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:textSize="20sp"
+                    android:text="x=-4/2     .Ans"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    />
+
+            </android.support.v7.widget.CardView>
+
+
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

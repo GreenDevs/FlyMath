@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Translate
 {
 
+    public static final String EQ_DELEMINATOR=":";
     public Translate()
     {
 
@@ -142,7 +143,7 @@ public class Translate
 
         String[] equation;
         ArrayList<Character> variablechars=new ArrayList<Character>();
-        equation=setOfEquations.split(",");
+        equation=setOfEquations.split(EQ_DELEMINATOR);
 
         // variable characters
 
