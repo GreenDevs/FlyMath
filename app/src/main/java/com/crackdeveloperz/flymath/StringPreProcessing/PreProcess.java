@@ -7,8 +7,10 @@ package com.crackdeveloperz.flymath.StringPreProcessing;
 
 import android.util.Log;
 
+import com.crackdeveloperz.flymath.MainActivity;
 import com.crackdeveloperz.flymath.Translator.Translate;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -48,9 +50,20 @@ public class PreProcess
         processed=processed.replace("A", "^");
         processed=processed.replace("(-)","(-1)").replace("(+)","(1)").replace("(+","(");
 
-        if(processed.charAt(0)=='+') processed=processed.substring(1,processed.length());
+        if(processed.length()!=0)
+        {
+            if(processed.charAt(0)=='+') processed=processed.substring(1,processed.length());
+        }
+        else
+        {
+            processed="EMPTY";
+        }
+
+        if(processed.length()==0) processed="EMPTY";
         rawString=new StringBuilder(processed);
-        Log.i("UNNECESSARY SYMBOLS", processed);
+        Log.i("REMOVED UNWANTED CHARS", processed);
+        MainActivity.logs=new ArrayList<>();
+        MainActivity.logs.add("REMOVED UNWANTED CHARS "+processed);
         return processed;
     }
 
@@ -58,7 +71,6 @@ public class PreProcess
     //THIS VLIDATES THE BRACKETS CLOSING AND OPENING USING STACK
     public boolean bracketValidation()
     {
-       removeUnnecesarySymbols();
        String rawData=rawString.toString();
        Stack stack=new Stack();
        return stack.startStack(rawData);
@@ -135,25 +147,58 @@ public class PreProcess
                 }
                
             }
-            
-            
+
+
             processedString.append(c);
         }
- 
-        return processedString.toString();
+
+        char now, ahead;
+        StringBuilder tempBuffer=new StringBuilder();
+        for(int i=0;i<processedString.length();i++)
+        {
+            ahead=';';
+            now=processedString.charAt(i);
+            tempBuffer.append(now);
+            if(i<processedString.length()-2)
+            {
+                ahead=processedString.charAt(i+1);
+            }
+            if(isAlphabet(now) && isNumeric(ahead))
+            {
+                tempBuffer.append("*");
+            }
+        }
+
+        Log.i("GENERALIZED EQNS", tempBuffer.toString());
+        MainActivity.logs.add("GENERALIZED EQNS "+tempBuffer.toString());
+        return tempBuffer.toString();
     }
     
     
-    public void splitAndCheck(String expression)
+    public boolean splitAndCheck(String expression)
     {
-        boolean isValid=true;
-
-        String operands[]=expression.split("(\\+)|(\\-)|(\\*)|(\\/)|(\\^)|(\\=)");
+        String operands[]=expression.split("(\\+)|(\\-)|(\\*)|(\\/)|(\\^)|(\\=)|(\\()|(\\))");
 
         for(String operand:operands)
         {
-            Log.i("OPERANDS"," SPLITTED "+operand);
+            operand=operand.replaceAll("[A-Za-z]","");
+            if(!operand.equals(""))
+            {
+                Log.i("OPERANDS", " SPLITTED " + operand);
+                MainActivity.logs.add("OERPAND " + operand);
+                try {
+                    Double.parseDouble(operand);
+                } catch (NumberFormatException e)
+                {
+                    Log.i("EXCEPTION", " ABOVE NUMBER IS INVALID "+operand);
+                    MainActivity.logs.add(operand+" IS MATHMATICALLY INVALID ");
+                    return false;
+                }
+            }
+
         }
+
+        return true;
     }
 
     //THIS CHECKS THE OPERATORS AND BRACKETS POSITIONS AND VLIDATE
@@ -211,6 +256,7 @@ public class PreProcess
 
              if(isOperator(nowChar)&&isOperator(aheadChar))
              {
+                 if(!((nowChar == '=' && aheadChar == '+') || (nowChar == '='||aheadChar=='-')))
                  return false;
              }
          }
@@ -227,6 +273,10 @@ public class PreProcess
     }
 
 
+    private boolean isNumeric(char c)
+    {
+        return (c>='0' && c<='9');
+    }
     //TO CHECK IF THE VARIABLE NAMES ARE VALID OR NOT
     public boolean checkVariableNames(String experssion)
     {
@@ -267,20 +317,25 @@ public class PreProcess
     {
         if(Translate.containsVariable(expression)&& expression.contains("="))
         {
-            Log.e("Expression gh","IT IS EQUATION");
+            Log.i("Expression gh","IT IS EQUATION");
+            MainActivity.logs.add("ENTRY IS EQUATION SET");
             return splitAndCheckEQ(expression);
         }
 
         else if(!Translate.containsVariable(expression) && !expression.contains("="))
         {
-            Log.e("Expression gh","expression normal arithmatic");
+            Log.i("Expression gh", "expression normal arithmatic");
+            MainActivity.logs.add("ENTRY IS ARITHMETIC");
+            return splitAndCheck(expression);
         }
 
         else
         {
             Log.i("Expression", "expression ERROR:Not valide mathematical expression!");
-        }
+            MainActivity.logs.add("INVALID ENTRY");
             return false;
+        }
+
     }
 
 
@@ -299,9 +354,14 @@ public class PreProcess
         for (String equation : equations)
         {
             Log.i("EQUATION", "EQUATION=" + equation);
+            MainActivity.logs.add("CURRENT EQUATION: "+equation);
             if(!(getUniqVarbleCount(equation)<=noOfUniqueVariables) ||  getCharCount(equation,'=')!=1 || equation.split("=").length!=2)
             {
                 Log.i("EQUATION"," EQUATION INVALID");
+                return false;
+            }
+            if(!splitAndCheck(equation))
+            {
                 return false;
             }
 

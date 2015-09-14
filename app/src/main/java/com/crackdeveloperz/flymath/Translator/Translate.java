@@ -21,8 +21,7 @@ public class Translate
     }
 
 
-    public static String sort(String inputExpression)
-    {
+    public static String sort(String inputExpression) throws Exception {
 
         String sortResult=null;
         //count number of opening and closing braces
@@ -66,7 +65,7 @@ public class Translate
         return sortResult;
     }
 
-    private static String inspectArithmetic(String expression){
+    private static String inspectArithmetic(String expression) throws Exception {
 
         //Balancing the number of braces
         if(countOf('(',expression) > countOf(')',expression)){
@@ -136,8 +135,7 @@ public class Translate
 
 
 
-    private static Solution inspectEquation(String setOfEquations)
-    {
+    private static Solution inspectEquation(String setOfEquations) throws Exception {
 
         //split equations
 
@@ -239,7 +237,7 @@ public class Translate
     {
         boolean status=false;
         for(int i=0;i<exp.length();++i){
-            if(exp.charAt(i)>=97 && exp.charAt(i)<=122){
+            if((exp.charAt(i)>='A' && exp.charAt(i)<='Z') || (exp.charAt(i)>='a' && exp.charAt(i)<='z')){
                 status=true;
             }
         }

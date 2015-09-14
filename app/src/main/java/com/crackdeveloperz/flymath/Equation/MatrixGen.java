@@ -1,5 +1,9 @@
 package com.crackdeveloperz.flymath.Equation;
 
+import android.util.Log;
+
+import com.crackdeveloperz.flymath.MainActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -29,7 +33,7 @@ public class MatrixGen
         return constantMatrix;
     }
 
-    public void generateMatrix(String[] equation,ArrayList<Character> charArray){
+    public void generateMatrix(String[] equation,ArrayList<Character> charArray) throws Exception{
 
         for(int i=0;i<equation.length;++i){
             String[] component=equation[i].split("\\+");
@@ -44,7 +48,9 @@ public class MatrixGen
                             try {
                                 coefficientMatrix[i][k]=Double.parseDouble(component[j]);
                             } catch (NumberFormatException e) {
-                                e.printStackTrace();
+
+                                Log.i("EXCEPTION", "NUMBER FORMAT EXCEPTION");
+
                             }
                             //System.out.println(coefficientMatrix[i][k]+" "+charArray.get(k));
                         }
@@ -153,13 +159,17 @@ public class MatrixGen
         }
 
 
-
+        String eqCoeff="";
         for(int i=0;i<a.length;++i){
             for(int j=0;j<a[0].length;++j){
                 System.out.print(a[i][j]+" ");
+                eqCoeff+=a[i][j]+" ";
             }
+            MainActivity.logs.add("COFFECIENTS OF "+ (i+1)+"th EQUATION: "+eqCoeff);
+            eqCoeff="";
             System.out.println();
         }
+
         // Transform the matrix into an upper triangle
         gaussian(a, index);
 
@@ -208,7 +218,8 @@ public class MatrixGen
 
 
     // Method to carry out the partial-pivoting Gaussian elimination.  Here index[] stores pivoting order.
-    public static void gaussian(Double a[][], int index[]){
+    public static void gaussian(Double a[][], int index[])
+    {
 
         int n = index.length;
         Double c[] = new Double[n];
@@ -225,12 +236,16 @@ public class MatrixGen
 
             Double c1 = 0.0;
 
-            for (int j=0; j<n; ++j){
+            try {
+                for (int j=0; j<n; ++j){
 
-                Double c0 = Math.abs(a[i][j]);
-                if (c0 > c1){
-                    c1 = c0;
+                    Double c0 = Math.abs(a[i][j]);
+                    if (c0 > c1){
+                        c1 = c0;
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             c[i] = c1;
@@ -282,18 +297,23 @@ public class MatrixGen
     }
 
 
-    public static Double[] multiply (Double[][] mainArray, Double[] constantArray)
+    public static Double[] multiply (Double[][] mainArray, Double[] constantArray) throws Exception
     {
         Double[] result = new Double[constantArray.length];
         System.out.println(mainArray[0].length+" "+constantArray.length);
 
-        for (int i = 0; i < mainArray.length; i++) {
-            result[i]=0.0;
-            for (int k = 0; k < constantArray.length; k++){
-                result[i] = result[i] + mainArray[i][k] * constantArray[k];
+        try {
+            for (int i = 0; i < mainArray.length; i++) {
+                result[i]=0.0;
+                for (int k = 0; k < constantArray.length; k++){
+                    result[i] = result[i] + mainArray[i][k] * constantArray[k];
+
+                }
 
             }
-
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
 
         return result;

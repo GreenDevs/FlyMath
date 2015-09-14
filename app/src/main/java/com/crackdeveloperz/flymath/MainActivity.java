@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -20,16 +21,19 @@ import com.microblink.activity.BlinkOCRActivity;
 import com.microblink.ocr.ScanConfiguration;
 import com.microblink.recognizers.ocr.blinkocr.parser.generic.RawParserSettings;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
 {
 
     private static final String LICENSE_KEY="QEAZF5XF-6M6OTULX-F4OBUP5Q-ZFJOILKJ-3HOOVHGW-WDEVFZBN-JHM5Z2U4-FDIW5EYJ";
-    private static final String RAW_STRING="+(-3( (4*5+4x)-7-8x)/(22-4)+x)8";
+    public static List<String> logs;
     private static final String MATCH_TAG="Match";
     private static final int MY_REQUEST_CODE=1;
     private EditText scannedText;
     private TextView result, scanText, calculateButton, results;
     private ScrollView scrollView;
+    private LogsAdapter mLogAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,6 +47,11 @@ public class MainActivity extends AppCompatActivity
 
     private void init()
     {
+        RecyclerView logsRecycler=(RecyclerView)findViewById(R.id.logsRecycler);
+        logsRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mLogAdapter=new LogsAdapter();
+        logsRecycler.setAdapter(mLogAdapter);
+
 //        result=(TextView)findViewById(R.id.calculated_result);
         results=(TextView)findViewById(R.id.id_of_result);
         scannedText=(EditText)findViewById(R.id.scanned_text);
@@ -104,13 +113,14 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void calculate(View v)
+    public void calculate(View v) throws Exception
+
+
     {
         String originalString=scannedText.getText().toString();
         PreProcess preProcess=new PreProcess(originalString);
         originalString=preProcess.removeUnnecesarySymbols();
         scannedText.setText(originalString);
-        preProcess.splitAndCheck(originalString);
         ///THIS IF CONDITION IS FOR BRACKETS VALIDATIONS
         if(preProcess.bracketValidation())
         {
@@ -123,13 +133,16 @@ public class MainActivity extends AppCompatActivity
                         if(preProcess.decideTypeNSplitCheck(originalString))
                         {
                             String generalEQ=preProcess.generalizeEquation();
-                            Log.i("FILTERD String", generalEQ);
                             String finalResult= Translate.sort(generalEQ);
                             results.setText(finalResult);
+
+                            logs.add("ANS::"+finalResult);
+                            mLogAdapter.triggerUpdates(logs);
+
                         }
                         else
                         {
-                            Toast.makeText(this, "INAVLID EXPRESSION", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "INAVLID ENTRY", Toast.LENGTH_SHORT).show();
                         }
 
                     }

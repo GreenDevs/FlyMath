@@ -1,5 +1,7 @@
 package com.crackdeveloperz.flymath.Equation;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -8,10 +10,10 @@ import java.util.ArrayList;
 public class Arithmetic
 {
 
-    public static String resolve(String cacheInput)
+    public static String resolve(String cacheInput) throws Exception
     {
 
-        String returnValue=new String(cacheInput);
+        String returnValue= cacheInput;
 
         for(int i=1;i<cacheInput.length();++i)
         {
@@ -56,28 +58,38 @@ public class Arithmetic
 
             if(cacheInput.contains("+"))
             {
-                ArrayList<Double> number=new ArrayList<Double>();
+                ArrayList<Double> number= new ArrayList<>();
                 String[] expression=cacheInput.split("\\+");
                 Double sum=0.0;
 
-                for(int i=0;i<expression.length;++i)
+                try
                 {
-                    expression[i] = resolve(expression[i]);
-                    try {
-                        number.add(Double.parseDouble(expression[i]));
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
+                    for(int i=0;i<expression.length;++i)
+                    {
+                        expression[i] = resolve(expression[i]);
+                        try {
+                            number.add(Double.parseDouble(expression[i]));
+                        } catch (NumberFormatException e) {
+
+                            Log.i("NUMBER FORMAT","NUMBER FORMAT EXCEPTION");
+                        }
+                        sum+=number.get(i);
                     }
-                    sum+=number.get(i);
+                    returnValue=sum+"";
+
+
                 }
-                returnValue=sum+"";
+                catch(Exception e)
+                {
+                    Log.i("EXCEPTION","NUMBER FORMAT EXCEPTION");
+                }
 
             }
             else if(cacheInput.contains("*") ||cacheInput.contains("/") || cacheInput.contains("^") )
             {
 
-                ArrayList<Double> DoubleArray = new ArrayList<Double>();
-                ArrayList<Character> symbols = new ArrayList<Character>();
+                ArrayList<Double> DoubleArray = new ArrayList<>();
+                ArrayList<Character> symbols = new ArrayList<>();
 
                 // in case first number is negative .. i.e. first char of string
                 // is minus '-'
@@ -91,7 +103,7 @@ public class Arithmetic
                     // and
 
                     if ((Character.isDigit(cacheInput.charAt(i))
-                            || cacheInput.charAt(i) == '.') || checkSwitch== true)
+                            || cacheInput.charAt(i) == '.') || checkSwitch)
                     {
                         BufferForDouble += cacheInput.charAt(i);
                         checkSwitch=false;
@@ -100,10 +112,14 @@ public class Arithmetic
                     // current character is symbol
                     else {
 
-                        DoubleArray.add(Double.parseDouble(BufferForDouble));
-                        BufferForDouble = "";
-                        symbols.add(cacheInput.charAt(i));
-                        checkSwitch=true;
+                        try {
+                            DoubleArray.add(Double.parseDouble(BufferForDouble));
+                            BufferForDouble = "";
+                            symbols.add(cacheInput.charAt(i));
+                            checkSwitch=true;
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }
@@ -127,10 +143,15 @@ public class Arithmetic
                 while(symbols.contains('/'))
                 {
 
-                    position = symbols.indexOf('/');
-                    DoubleArray.set(position , DoubleArray.get(position)/DoubleArray.get(position+1));
-                    DoubleArray.remove(position+1);
-                    symbols.remove(position);
+                    try {
+                        position = symbols.indexOf('/');
+                        DoubleArray.set(position , DoubleArray.get(position)/DoubleArray.get(position+1));
+                        DoubleArray.remove(position+1);
+                        symbols.remove(position);
+                    } catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
 
                 }
 
@@ -144,7 +165,12 @@ public class Arithmetic
                     symbols.remove(position);
 
                 }
-                returnValue=DoubleArray.get(0).toString();
+                try {
+                    returnValue=DoubleArray.get(0).toString();
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
 
 

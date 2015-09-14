@@ -7,11 +7,14 @@ import java.util.ArrayList;
  */
 public class Equate
 {
-    public static Solution getSolution(String[] equation, ArrayList<Character> variablechars)
-    {
+    public static Solution getSolution(String[] equation, ArrayList<Character> variablechars) throws Exception {
 
         MatrixGen matrix= new MatrixGen(variablechars.size());
-        matrix.generateMatrix(equation, variablechars);
+        try {
+            matrix.generateMatrix(equation, variablechars);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //System.out.println(matrix.getDeterminant());
 
         Double[][] inverse = MatrixGen.invert(matrix.getCoefficientMatrix());
@@ -26,7 +29,7 @@ public class Equate
 
     }
 
-    public static String kickBrackets(String expression){
+    public static String kickBrackets(String expression) throws Exception {
 
         if(expression.contains("(")){
             int startIndex;
